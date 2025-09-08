@@ -1,5 +1,4 @@
 package com.example.reservation;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,15 +11,15 @@ import java.util.List;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-
 @MultipartConfig
+@WebServlet("/reservation")
 public class ReservationServlet extends HttpServlet {
 	private final ReservationDAO reservationDAO = new ReservationDAO();
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String action = req.getParameter("action");
@@ -63,16 +62,29 @@ public class ReservationServlet extends HttpServlet {
 			resp.sendRedirect("index.jsp");
 		}
 	}
-
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
 		if ("add".equals(action)) {
 			String name = req.getParameter("name");
+			String tel = req.getParameter("tel");
+			String menu = req.getParameter("menu");
 			String reservationTimeString = req.getParameter("reservation_time");
 			if (name == null || name.trim().isEmpty()) {
-				req.setAttribute("errorMessage", "名前は必須です。");
+				req.setAttribute("errorMessage", "名前入力は必須です。");
+				RequestDispatcher rd = req.getRequestDispatcher("/index.jsp");
+				rd.forward(req, resp);
+				return;
+			}
+			if (tel == null || tel.trim().isEmpty()) {
+				req.setAttribute("errorMessage", "電話番号入力は必須です。");
+				RequestDispatcher rd = req.getRequestDispatcher("/index.jsp");
+				rd.forward(req, resp);
+				return;
+			}
+			if (menu == null || menu.trim().isEmpty()) {
+				req.setAttribute("errorMessage", "メニュー入力は必須です。");
 				RequestDispatcher rd = req.getRequestDispatcher("/index.jsp");
 				rd.forward(req, resp);
 				return;
@@ -91,7 +103,7 @@ public class ReservationServlet extends HttpServlet {
 					rd.forward(req, resp);
 					return;
 				}
-				if (!reservationDAO.addReservation(name, reservationTime)) {
+				if (!reservationDAO.addReservation(name, tel, menu, reservationTime)) {
 					req.setAttribute("errorMessage", "同じ名前と日時での予約は既に存在します。");
 					RequestDispatcher rd = req.getRequestDispatcher("/index.jsp");
 					rd.forward(req, resp);
@@ -106,9 +118,23 @@ public class ReservationServlet extends HttpServlet {
 		} else if ("update".equals(action)) {
 			int id = Integer.parseInt(req.getParameter("id"));
 			String name = req.getParameter("name");
+			String tel = req.getParameter("tel");
+			String menu = req.getParameter("menu");
 			String reservationTimeString = req.getParameter("reservation_time");
 			if (name == null || name.trim().isEmpty()) {
 				req.setAttribute("errorMessage", "名前は必須です。");
+				RequestDispatcher rd = req.getRequestDispatcher("/jsp/edit.jsp");
+				rd.forward(req, resp);
+				return;
+			}
+			if (tel == null || tel.trim().isEmpty()) {
+				req.setAttribute("errorMessage", "電話番号入力は必須です。");
+				RequestDispatcher rd = req.getRequestDispatcher("/jsp/edit.jsp");
+				rd.forward(req, resp);
+				return;
+			}
+			if (menu == null || menu.trim().isEmpty()) {
+				req.setAttribute("errorMessage", "メニュー入力は必須です。");
 				RequestDispatcher rd = req.getRequestDispatcher("/jsp/edit.jsp");
 				rd.forward(req, resp);
 				return;
@@ -127,7 +153,7 @@ public class ReservationServlet extends HttpServlet {
 					rd.forward(req, resp);
 					return;
 				}
-				if (!reservationDAO.updateReservation(id, name, reservationTime)) {
+				if (!reservationDAO.updateReservation(id, name, tel, menu,reservationTime)) {
 					req.setAttribute("errorMessage", "同じ名前と日時での予約は既に存在します。");
 					RequestDispatcher rd = req.getRequestDispatcher("/jsp/edit.jsp");
 					rd.forward(req, resp);
@@ -154,33 +180,38 @@ public class ReservationServlet extends HttpServlet {
 					}
 				} else {
 					req.setAttribute("errorMessage", "インポートするファイルを選択してください。");
-
 				}
 			} catch (Exception e) {
 				req.setAttribute("errorMessage", "CSV ファイルのインポート中にエラーが発生しました: " +
 						e.getMessage());
 				e.printStackTrace();
 			}
-		} else {
 			RequestDispatcher rd = req.getRequestDispatcher("/jsp/list.jsp");
 			rd.forward(req, resp);
+		} else {
 			resp.sendRedirect("index.jsp");
 		}
 	}
-
 	private void exportCsv(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("text/csv; charset=UTF-8");
 		resp.setHeader("Content-Disposition", "attachment; filename=\"reservations.csv\"");
 		PrintWriter writer = resp.getWriter();
 		writer.append("ID,名前,予約日時\n");
 		List<Reservation> records = reservationDAO.getAllReservations();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
 		for (Reservation record : records) {
 			writer.append(String.format("%d,%s,%s\n",
 					record.getId(),
 					record.getName(),
+					record.getTel(),
+					record.getMenu(),
 					record.getReservationTime() != null ? record.getReservationTime().format(formatter) : ""));
 		}
 		writer.flush();
 	}
 }
+
+
+
+
+

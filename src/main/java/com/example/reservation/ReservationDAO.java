@@ -36,23 +36,23 @@ public class ReservationDAO {
 				.orElse(null);
 	}
 
-	public boolean addReservation(String name, LocalDateTime reservationTime) {
-		if (isDuplicate(name, reservationTime)) {
+	public boolean addReservation(String name, String tel, String menu, LocalDateTime reservationTime) {
+		if (isDuplicate(name, tel, menu, reservationTime)) {
 			return false;
 		}
 		int id = idCounter.incrementAndGet();
-		reservations.add(new Reservation(id, name, reservationTime));
+		reservations.add(new Reservation(id, name, tel, menu, reservationTime));
 		saveReservations();
 		return true;
 	}
 
-	public boolean updateReservation(int id, String name, LocalDateTime reservationTime) {
-		if (isDuplicate(name, reservationTime, id)) {
+	public boolean updateReservation(int id, String name, String tel, String menu, LocalDateTime reservationTime) {
+		if (isDuplicate(name, tel, menu, reservationTime, id)) {
 			return false;
 		}
 		for (int i = 0; i < reservations.size(); i++) {
 			if (reservations.get(i).getId() == id) {
-				reservations.set(i, new Reservation(id, name, reservationTime));
+				reservations.set(i, new Reservation(id, name, tel, menu, reservationTime));
 				saveReservations();
 				return true;
 			}
@@ -86,6 +86,10 @@ public class ReservationDAO {
 		Comparator<Reservation> comparator = null;
 		if ("name".equals(sortBy)) {
 			comparator = Comparator.comparing(Reservation::getName);
+		} else if ("tel".equals(sortBy)) {
+			comparator = Comparator.comparing(Reservation::getTel);
+		} else if ("menu".equals(sortBy)) {
+			comparator = Comparator.comparing(Reservation::getMenu);
 		} else if ("time".equals(sortBy)) {
 			comparator = Comparator.comparing(Reservation::getReservationTime);
 		}
@@ -107,9 +111,11 @@ public class ReservationDAO {
 				try {
 					int id = Integer.parseInt(parts[0]);
 					String name = parts[1];
+					String tel = parts[2];
+					String menu = parts[3];
 					LocalDateTime time = LocalDateTime.parse(parts[2], FORMATTER);
-					if (!isDuplicate(name, time) && getReservationById(id) == null) {
-						reservations.add(new Reservation(id, name, time));
+					if (!isDuplicate(name, tel, menu, time) && getReservationById(id) == null) {
+						reservations.add(new Reservation(id, name, tel, menu, time));
 						if (id > idCounter.get()) {
 							idCounter.set(id);
 						}
@@ -123,13 +129,13 @@ public class ReservationDAO {
 		saveReservations();
 	}
 
-	private boolean isDuplicate(String name, LocalDateTime time) {
+	private boolean isDuplicate(String name, String tel, String menu, LocalDateTime time) {
 		return reservations.stream()
 				.anyMatch(r -> r.getName().equalsIgnoreCase(name) &&
 						r.getReservationTime().equals(time));
 	}
 
-	private boolean isDuplicate(String name, LocalDateTime time, int excludeId) {
+	private boolean isDuplicate(String name, String tel, String menu,LocalDateTime time, int excludeId) {
 		return reservations.stream()
 				.anyMatch(r -> r.getId() != excludeId && r.getName().equalsIgnoreCase(name)
 						&& r.getReservationTime().equals(time));
@@ -161,8 +167,10 @@ public class ReservationDAO {
 					try {
 						int id = Integer.parseInt(parts[0]);
 						String name = parts[1];
+						String tel = parts[1];
+						String menu = parts[1];
 						LocalDateTime time = LocalDateTime.parse(parts[2], FORMATTER);
-						reservations.add(new Reservation(id, name, time));
+						reservations.add(new Reservation(id, name, tel, menu, time));
 						if (id > maxId) {
 							maxId = id;
 						}

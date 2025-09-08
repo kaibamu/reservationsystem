@@ -19,6 +19,16 @@
 				<span class="error-message"><c:out value="${errorMessage}" /></span>
 			</p>
 			<p>
+				<label for="tel">電話番号:</label> <input type="text" id="tel"
+					name="tel" value="<c:out value="${reservation.tel}"/>" required>
+				<span class="error-message"><c:out value="${errorMessage}" /></span>
+			</p>
+			<p>
+				<label for="menu">メニュー:</label> <input type="text" id="menu"
+					name="menu" value="<c:out value="${reservation.menu}"/>" required>
+				<span class="error-message"><c:out value="${errorMessage}" /></span>
+			</p>
+			<p>
 				<label for="reservation_time">希望日時:</label> <input
 					type="datetime-local" id="reservation_time" name="reservation_time"
 					value="<c:out

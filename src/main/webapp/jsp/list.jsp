@@ -15,8 +15,7 @@
 			<div>
 				<label for="search">検索:</label> <input type="text" id="search"
 					name="search" value="<c:out value="${searchTerm}"/>"
-					placeholder="名
-前または日時">
+					placeholder="名前または日時">
 			</div>
 			<div>
 				<label for="sortBy">ソート基準:</label> <select id="sortBy" name="sortBy">
@@ -25,6 +24,10 @@
 					</option>
 					<option value="name"
 						<c:if test="${sortBy == 'name'}">selected</c:if>>名前</option>
+					<option value="tel"
+						<c:if test="${sortBy == 'tel'}">selected</c:if>>電話番号</option>
+					<option value="menu"
+						<c:if test="${sortBy == 'menu'}">selected</c:if>>メニュー</option>
 					<option value="time"
 						<c:if test="${sortBy == 'time'}">selected</c:if>>日時</option>
 				</select>
@@ -51,8 +54,7 @@
 			<form action="reservation" method="get" style="display: inline;">
 				<input type="hidden" name="action" value="clean_up"> <input
 					type="submit" value="過去の予約をクリーンアップ" class="button secondary"
-					onclick="return
-confirm('本当に過去の予約を削除しますか？');">
+					onclick="returnconfirm('本当に過去の予約を削除しますか？');">
 			</form>
 		</div>
 		<table>
@@ -60,6 +62,8 @@ confirm('本当に過去の予約を削除しますか？');">
 				<tr>
 					<th>ID</th>
 					<th>名前</th>
+					<th>電話番号</th>
+					<th>メニュー</th>
 					<th>予約日時</th>
 					<th>操作</th>
 				</tr>
@@ -69,6 +73,8 @@ confirm('本当に過去の予約を削除しますか？');">
 					<tr>
 						<td>${reservation.id}</td>
 						<td>${reservation.name}</td>
+						<td>${reservation.tel}</td>
+						<td>${reservation.menu}</td>
 						<td>${reservation.reservationTime}</td>
 						<td class="table-actions"><a
 							href="reservation?action=edit&id=${reservation.id}"
