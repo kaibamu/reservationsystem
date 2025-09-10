@@ -83,8 +83,7 @@
 								<input type="hidden" name="action" value="delete"> <input
 									type="hidden" name="id" value="${reservation.id}"> <input
 									type="submit" value="キャンセル" class="button danger"
-									onclick="return
-confirm('本当にキャンセルしますか？');">
+									onclick="returnconfirm('本当にキャンセルしますか？');">
 							</form></td>
 					</tr>
 				</c:forEach>
@@ -98,8 +97,7 @@ confirm('本当にキャンセルしますか？');">
 		<div class="pagination">
 			<c:if test="${currentPage != 1}">
 				<a
-					href="reservation?action=list&page=${currentPage -
-1}&search=${searchTerm}&sortBy=${sortBy}&sortOrder=${sortOrder}">前へ</a>
+					href="reservation?action=list&page=${currentPage -1}&search=${searchTerm}&sortBy=${sortBy}&sortOrder=${sortOrder}">前へ</a>
 			</c:if>
 			<c:forEach begin="1" end="${noOfPages}" var="i">
 				<c:choose>

@@ -21,6 +21,7 @@
 			<p>
 				<label for="tek">電話番号:</label> <input type="text" id="tel"
 					name="tel" value="<c:out value="${param.tel}"/>" required>
+					
 				<span class="error-message"><c:out value="${errorMessage}" /></span>
 			</p>
 			<p>
