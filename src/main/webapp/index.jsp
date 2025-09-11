@@ -14,21 +14,21 @@
 			method="post">
 			<input type="hidden" name="action" value="add">
 			<p>
-				<label for="name">名前:</label> <input type="text" id="name"
+				<label for="name"><h3>名前</h3><h4>※フルネームで入力してください</h4></label> <input type="text" id="name"
 					name="name" value="<c:out value="${param.name}"/>" required>
 				<span class="error-message"><c:out value="${errorMessage}" /></span>
 			</p>
 			<p>
-				<label for="tek">電話番号:</label> <input type="text" id="tel"
+				<label for="tel"><h3>電話番号</h3></label> <input type="text" id="tel"
 					name="tel" value="<c:out value="${param.tel}"/>" required>
 					
 				<span class="error-message"><c:out value="${errorMessage}" /></span>
 			</p>
 			<p>
-				<label for="menu">メニュー:</label> <select id="menu" name="menu"
+				<label for="menu"><h3>メニュー</h3></label> <select id="menu" name="menu"
 					required>
 					<option value="" <c:if test="${empty param.menu}">selected</c:if>>--
-						選択してください --</option>
+						ご希望のメニューを選択してください --</option>
 					<option value="カット"
 						<c:if test="${param.menu == 'カット'}">selected</c:if>>カット</option>
 					<option value="カラー"
@@ -50,7 +50,7 @@
 				</select>
 			</p>
 			<p>
-				<label for="reservation_time">希望日時:</label> <input
+				<label for="reservation_time"><h3>希望日時</h3></label> <input
 					type="datetime-local" id="reservation_time" name="reservation_time"
 					value="<c:out value="${param.reservation_time}"/>" required>
 				<span class="error-message"><c:out value="${errorMessage}" /></span>

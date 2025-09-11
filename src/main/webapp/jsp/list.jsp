@@ -60,7 +60,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
+					<th>予約番号</th>
 					<th>名前</th>
 					<th>電話番号</th>
 					<th>メニュー</th>

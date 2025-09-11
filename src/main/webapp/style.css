@@ -124,17 +124,18 @@ table {
 	overflow: hidden;
 }
 
-th,
-td {
+th,td {
 	border: 1px solid #e0e0e0;
 	padding: 12px 15px;
 	text-align: left;
+	font-size: 10px;
 }
 
 th {
 	background-color: #f2f2f2;
 	font-weight: bold;
 	color: #444;
+	font-size: 10px;
 }
 
 tr:nth-child(even) {
